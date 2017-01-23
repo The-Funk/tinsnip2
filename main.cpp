@@ -1,18 +1,58 @@
 #include <iostream>
 #include "tins/tins.h"
 //#include "zdb/zdb.h"
+#include <string>
+#include <vector>
+#include "optionparser.h"
 
 using namespace Tins;
 using namespace std;
 
-int main ( int argc, char *argv[] ) {
 
-    if (argc < 2) {
-        cout << "No args" << endl;
+
+
+
+enum  optionIndex { UNKNOWN, HELP, GWAY };
+const option::Descriptor usage[] =
+        {
+                {UNKNOWN, 0, "", "",option::Arg::None, "USAGE: example [options]\n\n"
+                                                               "Options:" },
+                {HELP, 0,"h", "help",option::Arg::None, "  --help  \tPrint usage and exit." },
+                {GWAY, 0,"g","gateway-ip",option::Arg::None, "  --gateway-ip, -g  \tSet the gateway address." },
+                {UNKNOWN, 0, "", "",option::Arg::None, "\nExamples:\n"
+                                                               "  example --unknown -- --this_is_no_option\n"
+                                                               "  example -unk --plus -ppp file1 file2\n" },
+                {0,0,0,0,0,0}
+        };
+
+int main(int argc, char* argv[])
+{
+    argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
+    option::Stats  stats(usage, argc, argv);
+    std::vector<option::Option> options(stats.options_max);
+    std::vector<option::Option> buffer(stats.buffer_max);
+    option::Parser parse(usage, argc, argv, &options[0], &buffer[0]);
+
+    if (parse.error())
+        return 1;
+
+    if (options[HELP] || argc == 0) {
+        option::printUsage(std::cout, usage);
+        return 0;
     }
-    else {
-        cout << "You right" << endl;
+
+    if (options[GWAY]){
+        cout << options[GWAY];
     }
+
+    for (option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
+        std::cout << "Unknown option: " << std::string(opt->name,opt->namelen) << "\n";
+
+    for (int i = 0; i < parse.nonOptionsCount(); ++i)
+        std::cout << "Non-option #" << i << ": " << parse.nonOption(i) << "\n";
+
+    return 0;
+}
 
     //EthernetII eth;
     //IP *ip = new IP();
@@ -21,6 +61,3 @@ int main ( int argc, char *argv[] ) {
     //ip->inner_pdu(tcp);
     // ip is eth's inner pdu
     //eth.inner_pdu(ip);
-
-    return 0;
-}
