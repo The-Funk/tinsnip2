@@ -8,20 +8,15 @@
 using namespace Tins;
 using namespace std;
 
-
-
-
-
-enum  optionIndex { UNKNOWN, HELP, GWAY };
+enum  optionIndex { UNKNOWN, HELP, GWAY, TRGT, TGTRNG };
 const option::Descriptor usage[] =
         {
                 {UNKNOWN, 0, "", "",option::Arg::None, "USAGE: example [options]\n\n"
                                                                "Options:" },
-                {HELP, 0,"h", "help",option::Arg::None, "  --help  \tPrint usage and exit." },
-                {GWAY, 0,"g","gateway-ip",option::Arg::None, "  --gateway-ip, -g  \tSet the gateway address." },
-                {UNKNOWN, 0, "", "",option::Arg::None, "\nExamples:\n"
-                                                               "  example --unknown -- --this_is_no_option\n"
-                                                               "  example -unk --plus -ppp file1 file2\n" },
+                {HELP, 0, "h", "help",option::Arg::None, "  --help  \tPrint usage and exit." },
+                {GWAY, 1, "g", "gateway",option::Arg::Optional, "  --gateway, -g  \tSet the gateway address." },
+                {TRGT, 2, "t", "target",option::Arg::Optional, "  --target, -t  \tSet the target machine address." },
+                {TGTRNG, 2, "r", "range",option::Arg::Optional, "  --range, -r  \tSet a range of targets." },
                 {0,0,0,0,0,0}
         };
 
@@ -42,8 +37,14 @@ int main(int argc, char* argv[])
     }
 
     if (options[GWAY]){
-        cout << options[GWAY];
+        cout << "Hello" << endl;
     }
+
+    if (options[TRGT]){
+        cout << "Hey" << endl;
+    }
+
+    cout << parse.optionsCount() << endl;
 
     for (option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
         std::cout << "Unknown option: " << std::string(opt->name,opt->namelen) << "\n";
