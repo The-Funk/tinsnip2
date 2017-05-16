@@ -1,5 +1,5 @@
 #include <iostream>
-//#include "zdb/zdb.h"
+#include "zdb/zdb.h"
 #include <string>
 #include <vector>
 #include "optionparser.h"
