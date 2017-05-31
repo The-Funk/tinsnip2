@@ -24,14 +24,14 @@ int main(int argc, char* argv[]) {
         //Add Switch Arguments....
 
         //Set sniffer on/off, default value runs program with sniffer off
-        SwitchArg sniffArg("s","sniff-traffic","Print name backwards", argp, false);
+        SwitchArg sniffArg("s","sniff-traffic","Sniff target traffic", argp, false);
         //Set ARP poisoning on/off, default value runs program with Poisoning off
         SwitchArg arpsnArg("p","poison-arp","Poison target machine's ARP cache", argp, false);
-        
+
         argp.parse(argc,argv);
 
         if (sniffArg.getValue()){
-            cout << "Yep! It's parsin!" << endl;
+            cout << "Yep! It's sniffin!" << endl;
         }
     }
     catch (TCLAP::ArgException &e) {
