@@ -1,5 +1,4 @@
 #include <iostream>
-#include "zdb/zdb.h"
 #include <string>
 #include <vector>
 #include <tclap/CmdLine.h>

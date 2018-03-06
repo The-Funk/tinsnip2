@@ -1,5 +1,5 @@
 //
-// Created by cole on 3/4/18.
+// Created by The-Funk on 3/4/18.
 //
 
 #include "t_sniffer.h"
@@ -33,6 +33,7 @@ void t_sniffer::stopSniff() {
 bool t_sniffer::handlePacket(Packet& packet){
     if(this->OnOffSwitch){
         //What to do if we're supposed to be sniffing
+        //Open database connection
     }
     else{
         return false;
