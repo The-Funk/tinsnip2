@@ -13,12 +13,11 @@ class t_sniffer {
 //Data members unique to/only accessible to the sniffer object
 private:
 
-    Tins::SnifferConfiguration config();    //Universal configuration object
-    Tins::Sniffer sniffer();                //Universal sniffer object
-    std::string target;                     //Target IP or Range for sniffer
-    std::string intf;                       //Interface to listen on
-    bool promisc;                           //Specify whether interface should listen in promisc mode
-    bool OnOffSwitch;                       //Create an on/off condition for handlePacket to check
+    Tins::SnifferConfiguration config;    //Universal configuration object
+    std::string target;                   //Target IP or Range for sniffer
+    std::string intf;                     //Interface to listen on
+    bool promisc;                         //Specify whether interface should listen in promisc mode
+    bool OnOffSwitch;                     //Create an on/off condition for handlePacket to check
 
 //Public data members
 public:
@@ -27,7 +26,7 @@ public:
     t_sniffer(std::string target, std::string intf);                //Etc etc etc
     void startSniff();                                              //Start the sniffing session
     void stopSniff();
-    bool handlePacket(Tins::Packet& packet);
+    bool handlePacket(Tins::PDU& packet);
     std::string setTarget();
 
 };
