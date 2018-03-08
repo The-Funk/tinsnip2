@@ -6,7 +6,9 @@
 using namespace std;
 using namespace TCLAP;
 
-int main(int argc, char* argv[]) {
+//Added const here and that got rid of a red mark later on when calling parse against the program
+//argument list... not sure why or what effect this will have yet.
+int main(int argc, const char* argv[]) {
     try {
         //Create argument parser
         CmdLine argp("For more help, you can find examples on the web at www.foo.bar", ' ', "0.1");
@@ -18,7 +20,7 @@ int main(int argc, char* argv[]) {
         //Source IP Range Arg
         ValueArg<string> rngArg("r","src-range","IP Range where traffic originates",true,"192.168.x.x","");
         //Host IP Arg
-        ValueArg<std::string> hostArg("h","host-ip","Address of host machine",true,"192.168.x.x","");
+        ValueArg<string> hostArg("h","host-ip","Address of host machine",true,"192.168.x.x","");
 
         //Add Switch Arguments....
 
