@@ -7,23 +7,38 @@
 using namespace std;
 using namespace Tins;
 
-t_sniffer::t_sniffer() {
-    //Set immediate mode whenever creating a new sniffer object to keep things fast
-    t_sniffer::config.set_immediate_mode(true);
+
+t_sniffer::t_sniffer(string intf) {
+    //Set interface
+    this->intf = intf;
+    //Set immediate mode to keep things fast
+    this->config.set_immediate_mode(true);
 }
 
+t_sniffer::t_sniffer(string intf, string target) {
+    //Set interface
+    this->intf = intf;
+    //Set immediate mode to keep things fast
+    this->config.set_immediate_mode(true);
+    //Set ip src filter
+    this->config.set_filter("ip src" + target);
+}
 
-t_sniffer::t_sniffer(string target, string intf) {
-    //Set immediate mode whenever creating a new sniffer object to keep things fast
-    t_sniffer::config.set_immediate_mode(true);
-    t_sniffer::config.set_promisc_mode(true);
-    t_sniffer::config.set_filter("ip src" + target);
+t_sniffer::t_sniffer(string intf, string target, bool promisc) {
+    //Set interface
+    this->intf = intf;
+    //Set immediate mode to keep things fast
+    this->config.set_immediate_mode(true);
+    //Set ip src filter
+    this->config.set_filter("ip src" + target);
+    //Set promiscuity on interface
+    this->config.set_promisc_mode(promisc);
 }
 
 //Capture packets and run handlePacket template functor on each, sequentially, until functor returns false
 void t_sniffer::startSniff() {
-    Sniffer sniffer("eth0", t_sniffer::config);
     this->OnOffSwitch = true;
+    Sniffer sniffer(this->intf, this->config);
     sniffer.sniff_loop(make_sniffer_handler(this, &t_sniffer::handlePacket));
 }
 

@@ -21,13 +21,12 @@ private:
 
 //Public data members
 public:
-    t_sniffer();                                                    //Default constructor
-    t_sniffer(std::string target);                                  //Overloaded constructor specifying target
-    t_sniffer(std::string target, std::string intf);                //Etc etc etc
+    t_sniffer(std::string intf);                                    //Overloaded constructor w/ intf
+    t_sniffer(std::string intf, std::string target);                //Overloaded constructor w/ intf & target
+    t_sniffer(std::string intf, std::string target, bool promisc);  //Overloaded constructor w/ intf, target, & promisc
     void startSniff();                                              //Start the sniffing session
-    void stopSniff();
-    bool handlePacket(Tins::PDU& packet);
-    std::string setTarget();
+    void stopSniff();                                               //Stop the sniffing session
+    bool handlePacket(Tins::PDU& packet);                           //Determines what to do during session
 
 };
 
