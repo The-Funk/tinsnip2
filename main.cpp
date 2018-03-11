@@ -1,7 +1,7 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <tclap/CmdLine.h>
+#include "t_sniffer.h"
 
 using namespace std;
 using namespace TCLAP;
@@ -15,24 +15,28 @@ int main(int argc, const char* argv[]) {
 
         //Add Value storing Arguments....
 
-        //Source IP Arg
-        ValueArg<string> srcArg("s","src-ip","IP Address where traffic originates",true,"192.168.x.x","");
-        //Source IP Range Arg
-        ValueArg<string> rngArg("r","src-range","IP Range where traffic originates",true,"192.168.x.x","");
-        //Host IP Arg
-        ValueArg<string> hostArg("h","host-ip","Address of host machine",true,"192.168.x.x","");
+        //Sniffer interface. If not set, defaults to first interface with default gateway
+        ValueArg<string> intArg("i", "intf", "Interface to use for sniffing", false, "default", "");
+        //Target IP Range Arg
+        ValueArg<string> rngArg("t", "target-range", "IP Range where traffic originates", true, "192.168.x.x", "");
 
         //Add Switch Arguments....
 
         //Set sniffer on/off, default value runs program with sniffer off
-        SwitchArg sniffArg("s","sniff-traffic","Sniff target traffic", argp, false);
+        SwitchArg sniffArg("s", "sniff-traffic", "Sniff target traffic", argp, false);
         //Set ARP poisoning on/off, default value runs program with Poisoning off
-        SwitchArg arpsnArg("p","poison-arp","Poison target machine's ARP cache", argp, false);
+        SwitchArg arpsnArg("p", "poison-arp", "Poison target machine's ARP cache", argp, false);
 
-        argp.parse(argc,argv);
+        //Add ValueArgs to command line
+        argp.add(intArg);
 
-        if (sniffArg.getValue()){
-            cout << "Yep! It's sniffin!" << endl;
+        //Parse remaining SwitchArgs
+        argp.parse(argc, argv);
+
+        if (sniffArg.getValue()) {
+            t_sniffer sniffer;
+            //Set sniffer interface
+            sniffer.setIntf(intArg.getValue());
         }
     }
     catch (TCLAP::ArgException &e) {
