@@ -20,12 +20,12 @@ t_sniffer::t_sniffer() {
 void t_sniffer::setIntf(string intf) {
     if(intf != "default") {
         this->intf = intf;
-        cout << "Interface name manually set to: " << intf;
+        cout << "Interface name manually set to: " << intf << endl;
     }
     else {
         NetworkInterface iface = NetworkInterface::default_interface();
         this->intf = iface.name();
-        cout << "Interface name set to default: " << iface.name();
+        cout << "Interface name set to default: " << iface.name() << endl;
     }
 }
 
@@ -44,9 +44,25 @@ void t_sniffer::setPromisc(bool promisc) {
 void t_sniffer::startSniff() {
     this->OnOffSwitch = true;
     Sniffer sniffer(this->intf, this->config);
+    int count = 0;
+    bool linkTypeKnown = false;
     sniffer.sniff_loop([&](Packet& packet) {
-        if(this->OnOffSwitch){
+        if(this->OnOffSwitch && count < 10) {
+            if (!linkTypeKnown && packet.pdu()->find_pdu<EthernetII>()) {
+                cout << "This is an Ethernet interface." << endl;
+                linkTypeKnown = true;
+            }
+            else if (!linkTypeKnown && packet.pdu()->find_pdu<Dot11>()) {
+                cout << "This is an 802.11 wifi interface." << endl;
+                linkTypeKnown = true;
+            }
 
+            if (packet.pdu()->find_pdu<IP>()) {
+                // Just print timestamp's seconds and IP source address
+                cout << "At: " << packet.timestamp().seconds() << " - " << packet.pdu()->rfind_pdu<IP>().src_addr()
+                     << endl;
+            }
+            count++;
             return true;
         }
         return false;

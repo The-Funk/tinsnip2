@@ -19,10 +19,10 @@ private:
 
 //Public data members
 public:
-    t_sniffer();                                      //Default constructor, use default intf
-    void setIntf(std::string intf);                   //
-    void setTarget(std::string target);               //
-    void setPromisc(bool promisc);                    //
+    t_sniffer();                                      //Constructor, make a sniffer wrapper
+    void setIntf(std::string intf);                   //Sets interface
+    void setTarget(std::string target);               //Sets target filter
+    void setPromisc(bool promisc);                    //Sets promiscuous mode
     void startSniff();                                //Start the sniffing session
     void stopSniff();                                 //Stop the sniffing session
 

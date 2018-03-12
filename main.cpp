@@ -37,6 +37,7 @@ int main(int argc, const char* argv[]) {
             t_sniffer sniffer;
             //Set sniffer interface
             sniffer.setIntf(intArg.getValue());
+            sniffer.startSniff();
         }
     }
     catch (TCLAP::ArgException &e) {
