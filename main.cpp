@@ -2,6 +2,7 @@
 #include <vector>
 #include <tclap/CmdLine.h>
 #include "t_sniffer.h"
+#include "t_dhcpstarve.h"
 
 using namespace std;
 using namespace TCLAP;
@@ -26,6 +27,8 @@ int main(int argc, const char* argv[]) {
         SwitchArg sniffArg("s", "sniff-traffic", "Sniff target traffic", argp, false);
         //Set ARP poisoning on/off, default value runs program with Poisoning off
         SwitchArg arpsnArg("p", "poison-arp", "Poison target machine's ARP cache", argp, false);
+        //Set DHCP AutoStarve on/off, default value runs program with AutoStarve off
+        SwitchArg dhcpArg("x", "dhcp-starve", "Get ALL the addresses", argp, false);
 
         //Add ValueArgs to command line
         argp.add(intArg);
@@ -38,6 +41,10 @@ int main(int argc, const char* argv[]) {
             //Set sniffer interface
             sniffer.setIntf(intArg.getValue());
             sniffer.startSniff();
+        }
+
+        if (dhcpArg.getValue()) {
+            t_dhcpstarve starver;
         }
     }
     catch (TCLAP::ArgException &e) {

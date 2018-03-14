@@ -13,6 +13,7 @@ t_sniffer::t_sniffer() {
 
     //Set immediate mode to keep things fast
     this->config.set_immediate_mode(true);
+    this->config.set_promisc_mode(true);
 
 }
 
