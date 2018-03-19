@@ -44,7 +44,8 @@ int main(int argc, const char* argv[]) {
         }
 
         if (dhcpArg.getValue()) {
-            t_dhcpstarve starver;
+            t_dhcpstarve starver("wlan0");
+            starver.autogenVirtIfaces();
         }
     }
     catch (TCLAP::ArgException &e) {
