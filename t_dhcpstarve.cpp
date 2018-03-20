@@ -28,31 +28,45 @@ void t_dhcpstarve::autogenVirtIfaces() {
     string mask = this->hostAdapter.ipv4_mask().to_string();            //Get netmask
     istringstream ss(mask);                                             //Load netmask into istringstream
     string token;                                                       //Create token for octects
-    int bin = 0, hostbits = 0, numIfaces = 0;                           //Ints for binary 1/0, host bit count i sn mask, and num ifaces
-                                                                        //Create array for storing hex values
+    int bin = 0, hostbits = 0, numIfaces = 0;                           //Utility ints!
+    char hex[16] = {'1','2','3','4','5','6','7','8',
+                    '9','0','A','B','C','D','E','F'};                   //Create array for storing hex values
 
-    while(getline(ss, token, '.')) {                                    //Iterate through mask using the iss, split by . examine octets indiv
+    while(getline(ss, token, '.')) {                                    //Iterate through mask using the iss, split by .
         int octet = stoi(token);                                        //Use stoi to convert octet string tokens into integers
         if (octet == 0) {                                               //If the octet is all host bits
             hostbits += 8;                                              //Add 8
         }
         else {                                                          //Else do math
-            while (octet > 0) {                                         //Use nested while to add to host bits count
+            while (octet > 0) {                                         //Use nested while to add to host bit count
                 bin = octet % 2;                                        //Is there a remainder when dividing ints?
                 if (bin == 0) {                                         //If no, that's a zero!
                     hostbits++;                                         //And thus a host bit :)
                 }
-                octet /= 2;                                             //Divide by 2 for real, remembering that ints will round
+                octet /= 2;                                             //Divide by 2 for real, remember, ints will round!
             }
         }
     }
 
     numIfaces = (pow(2, hostbits) - 2);                                 //We should now have the number of host bits, let's do the math!
 
-    for (int i=1; i <= numIfaces; i++) {
-        viface::VIface iface("viface%d");
-        iface.setMAC("66:23:2d:28:c6:84");
+    array<string, numIfaces> macs;
+
+    for (int i=1; i <= numIfaces; i++) {                                //
+        viface::VIface iface("viface%d");                               //
+        iface.setMAC("66:23:2d:28:c6:84");                              //
     }
+}
+
+string * t_dhcpstarve::autogenMACs(int numIfaces){
+    ifstream f;
+    streampos end;
+    f.open("macvendors", ifstream::in|ifstream::binary);
+    f.seekg (0, ios::end);
+    end = f.tellg();
+
+
+
 }
 
     // Create interface

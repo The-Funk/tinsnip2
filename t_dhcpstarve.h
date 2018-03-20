@@ -17,6 +17,7 @@ private:
 public:
     t_dhcpstarve(std::string hostAdapter);
     void autogenVirtIfaces();
+    std::string * autogenMACs(int numIfaces);
     void setDelay();
     void starveNetwork();
 
