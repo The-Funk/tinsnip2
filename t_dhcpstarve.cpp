@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <array>
+#include <vector>
 #include <cmath>
 #include <chrono>
 #include <thread>
@@ -19,28 +20,28 @@
 using namespace std;
 using namespace Tins;
 
-t_dhcpstarve::t_dhcpstarve(string hostAdapter) {
+t_dhcpstarve::t_dhcpstarve(string hostAdapter){
     this->hostAdapter = NetworkInterface(hostAdapter);                  //Create a network adapter
+    srand(time(0));                                                     //Seed the random number generator
 }
 
-void t_dhcpstarve::autogenVirtIfaces() {
-    srand(time(0));                                                     //Seed random number generator
+void t_dhcpstarve::autogenVirtIfaces(){
     string mask = this->hostAdapter.ipv4_mask().to_string();            //Get netmask
     istringstream ss(mask);                                             //Load netmask into istringstream
     string token;                                                       //Create token for octects
     int bin = 0, hostbits = 0, numIfaces = 0;                           //Utility ints!
-    char hex[16] = {'1','2','3','4','5','6','7','8',
+    array<char, 16> hex = {'1','2','3','4','5','6','7','8',
                     '9','0','A','B','C','D','E','F'};                   //Create array for storing hex values
 
-    while(getline(ss, token, '.')) {                                    //Iterate through mask using the iss, split by .
+    while(getline(ss, token, '.')){                                     //Iterate through mask using the iss, split by .
         int octet = stoi(token);                                        //Use stoi to convert octet string tokens into integers
-        if (octet == 0) {                                               //If the octet is all host bits
+        if (octet == 0){                                                //If the octet is all host bits
             hostbits += 8;                                              //Add 8
         }
         else {                                                          //Else do math
-            while (octet > 0) {                                         //Use nested while to add to host bit count
+            while (octet > 0){                                          //Use nested while to add to host bit count
                 bin = octet % 2;                                        //Is there a remainder when dividing ints?
-                if (bin == 0) {                                         //If no, that's a zero!
+                if (bin == 0){                                          //If no, that's a zero!
                     hostbits++;                                         //And thus a host bit :)
                 }
                 octet /= 2;                                             //Divide by 2 for real, remember, ints will round!
@@ -50,20 +51,31 @@ void t_dhcpstarve::autogenVirtIfaces() {
 
     numIfaces = (pow(2, hostbits) - 2);                                 //We should now have the number of host bits, let's do the math!
 
-    array<string, numIfaces> macs;
+    vector<string> macs;
 
-    for (int i=1; i <= numIfaces; i++) {                                //
-        viface::VIface iface("viface%d");                               //
-        iface.setMAC("66:23:2d:28:c6:84");                              //
-    }
+    //for (int i=1; i <= numIfaces; i++) {                                //
+    //    viface::VIface iface("viface%d");                               //
+    //    iface.setMAC("66:23:2d:28:c6:84");                              //
+    //}
 }
 
 string * t_dhcpstarve::autogenMACs(int numIfaces){
-    ifstream f;
-    streampos end;
-    f.open("macvendors", ifstream::in|ifstream::binary);
-    f.seekg (0, ios::end);
-    end = f.tellg();
+    ifstream f;                                                                                         //
+    string line;                                                                                        //
+    vector<string> macvendors, rMacs;                                                                   //
+    f.open("macvendors");                                                                               //
+    while(!f.eof()){                                                                                    //
+        line.clear();                                                                                   //
+        getline(f, line);                                                                               //
+        if (line != ""){                                                                                //
+            macvendors.push_back(line);                                                                 //
+        }
+    }
+    cout << "This is a test. There are " << macvendors.size() << " mac vendors in the vendor file";     //Yeet
+    for (int i=0; i < numIfaces; i++){                                                                  //My C++ Fu is WEAK
+        rMacs.push_back(macvendors.at(rand() % 1700));                                                  //I think...right? I'll test it tmrw
+    }
+    
 
 
 
@@ -79,10 +91,10 @@ string * t_dhcpstarve::autogenMACs(int numIfaces){
     //iface.up();
 
     //HERE'S THE DEAL
-    //You need to get a picture of the network, figure out the netmask/bcast/etc from the interface selected
     //Learn more about DHCP, figure out what message a completely starved DHCP server would send
-    //Create tap interfaces using libviface based on an assumed number of available addresses (determined by netmask)
-    //Assign each tap interface a legit looking fake MAC address
+    //Implement a DHCP client
+
+    //AUTOSTARVE FUNCTIONS
     //Use sdbusplus to interact with systemd-networkd or network-manager or whatever and add a new bridge interface
     //Ideally temporarily disable overly complex network managers and just use systemd-networkd
     //THEN restart networking with your tap interfaces connected to the bridge interface
@@ -96,7 +108,4 @@ string * t_dhcpstarve::autogenMACs(int numIfaces){
     //WiFi AP's don't like multiple MACs on the same interface because only one can associate with the station at a time
     //There are ways around this, however none of them play nicely with DHCP
     //So for now we have to make a sacrifice and not use tap interfaces when trying to starve a wifi network
-
-    //string cmdstring = "dhcpcd " + iface.getName();
-    //system(cmdstring.c_str());
 
