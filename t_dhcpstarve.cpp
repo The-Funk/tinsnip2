@@ -30,8 +30,6 @@ void t_dhcpstarve::autogenVirtIfaces(){
     istringstream ss(mask);                                             //Load netmask into istringstream
     string token;                                                       //Create token for octects
     int bin = 0, hostbits = 0, numIfaces = 0;                           //Utility ints!
-    array<char, 16> hex = {'1','2','3','4','5','6','7','8',
-                    '9','0','A','B','C','D','E','F'};                   //Create array for storing hex values
 
     while(getline(ss, token, '.')){                                     //Iterate through mask using the iss, split by .
         int octet = stoi(token);                                        //Use stoi to convert octet string tokens into integers
@@ -63,6 +61,8 @@ string * t_dhcpstarve::autogenMACs(int numIfaces){
     ifstream f;                                                                                         //
     string line;                                                                                        //
     vector<string> macvendors, rMacs;                                                                   //
+    array<char, 16> hex = {'1','2','3','4','5','6','7','8',
+                           '9','0','A','B','C','D','E','F'};                                            //Create array for storing hex values
     f.open("macvendors");                                                                               //
     while(!f.eof()){                                                                                    //
         line.clear();                                                                                   //
@@ -71,11 +71,15 @@ string * t_dhcpstarve::autogenMACs(int numIfaces){
             macvendors.push_back(line);                                                                 //
         }
     }
+    f.close();                                                                                          //Always take out the garbage
     cout << "This is a test. There are " << macvendors.size() << " mac vendors in the vendor file";     //Yeet
-    for (int i=0; i < numIfaces; i++){                                                                  //My C++ Fu is WEAK
-        rMacs.push_back(macvendors.at(rand() % 1700));                                                  //I think...right? I'll test it tmrw
+    for (int i=0; i < numIfaces; i++){                                                                  //For however many interfaces we need
+        rMacs.push_back(macvendors.at(rand() % 1700)
+                        + hex.at(rand() % 16) + hex.at(rand() % 16) + ":"
+                        + hex.at(rand() % 16) + hex.at(rand() % 16) + ":"
+                        + hex.at(rand() % 16) + hex.at(rand() % 16));                                   //Generate a seemingly legit mac address
     }
-    
+
 
 
 
