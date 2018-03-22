@@ -6,6 +6,7 @@
 #define TINSNIP_T_DHCPSTARVE_H
 
 #include "viface/viface.hpp"
+#include <vector>
 #include <tins/tins.h>
 
 class t_dhcpstarve {
@@ -17,7 +18,7 @@ private:
 public:
     t_dhcpstarve(std::string hostAdapter);
     void autogenVirtIfaces();
-    std::string * autogenMACs(int numIfaces);
+    std::vector<std::string> autogenMACs(int numIfaces);
     void setDelay();
     void starveNetwork();
 

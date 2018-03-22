@@ -57,7 +57,7 @@ void t_dhcpstarve::autogenVirtIfaces(){
     //}
 }
 
-string * t_dhcpstarve::autogenMACs(int numIfaces){
+vector<string> t_dhcpstarve::autogenMACs(int numIfaces){
     ifstream f;                                                                                         //
     string line;                                                                                        //
     vector<string> macvendors, rMacs;                                                                   //
@@ -80,7 +80,7 @@ string * t_dhcpstarve::autogenMACs(int numIfaces){
                         + hex.at(rand() % 16) + hex.at(rand() % 16));                                   //Generate a seemingly legit mac address
     }
 
-
+    return rMacs;
 
 
 }
